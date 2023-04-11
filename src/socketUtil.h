@@ -15,6 +15,7 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <netdb.h>
+#include <stdbool.h>
 
 #define SERVER_PORT 2000
 #define MAX_LINE 4096

@@ -24,7 +24,7 @@ int main(int argc, char **argv){
         exit_Error("Error de escucha.");
     }
 
-    for(;;){
+    while(true){
         struct sockaddr_in addr;
         socklen_t addr_Len;
         char client_address[MAX_LINE + 1];
