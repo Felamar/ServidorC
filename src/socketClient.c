@@ -1,5 +1,6 @@
 /* 
-    MUST COMPILE AS: gcc -o ../build/socketClient socketClient.c socketUtil.c
+    MUST COMPILE AS: g
+    cc -o ../build/socketClient socketClient.c socketUtil.c
 */
 
 #include "socketUtil.h"
