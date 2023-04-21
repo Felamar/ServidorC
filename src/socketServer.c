@@ -21,11 +21,23 @@ void setHttpHeader(char httpHeader[])
 
 int main(int argc, char **argv){
 
+    char *movies[] = {
+        "Batman", "abcdefghij",
+        "Superman", "abcdefghij",
+        "Spiderman", "abcdefghij"
+    };
+    char *get_type[] = {
+        "GET / "
+        "GET /data",
+        "GET /set?"
+    };
+
     char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
     int listen_SocketFD, connection_FD, n;
     struct sockaddr_in *server_Address;
     uint8_t buff[MAX_LINE + 1];
     uint8_t recv_Line[MAX_LINE + 1];
+    uint8_t reqType_Line[MAX_LINE + 1];
 
     listen_SocketFD = createSocket();
     if(listen_SocketFD < 0){
@@ -56,6 +68,12 @@ int main(int argc, char **argv){
 
         memset(recv_Line, 0, MAX_LINE);
         n = read(connection_FD, recv_Line, MAX_LINE-1);
+        char* x;
+        int type;
+        for(int i = 0; i < sizeof(*get_type); i++){
+            x = strstr(recv_Line, get_type[i]);
+            type = i;
+        }
         while(n > 0){
             fprintf(stdout, "\n\n%s", /*bin2hex(recv_Line, n) */ recv_Line);
             if(recv_Line[n-1] == '\n'){
@@ -67,10 +85,38 @@ int main(int argc, char **argv){
         if(n < 0){
             exit_Error("Error de lectura");
         }
-            //snprintf((char*) buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nHELLO!\n\n");
-            send(connection_FD, httpHeader, sizeof(httpHeader), 0);
 
-        write(connection_FD, (char*) buff, strlen((char*) buff));
+        //snprintf((char*) buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nHELLO!\n\n");
+        switch(type){
+            case 0:
+                send(connection_FD, httpHeader, sizeof(httpHeader), 0);
+                break;
+            case 1:
+                for(int i = 0; i < 6; i++){
+                    send(connection_FD, movies[i], strlen(movies[i]), 0);
+                    send(connection_FD, ", ", strlen(", "), 0);
+                    if(i % 2 != 0){
+                        send(connection_FD, "\n", strlen("\n"), 0);
+                    }
+                }
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
+        if(x != NULL){
+            for(int i = 0; i < 6; i++){
+                send(connection_FD, movies[i], strlen(movies[i]), 0);
+                send(connection_FD, ", ", strlen(", "), 0);
+                if(i % 2 != 0){
+                    send(connection_FD, "\n", strlen("\n"), 0);
+                }
+            }
+        }else{
+            send(connection_FD, httpHeader, sizeof(httpHeader), 0);
+        }
+
         close(connection_FD);
     }
 }
