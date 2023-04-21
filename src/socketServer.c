@@ -5,8 +5,23 @@
 
 #include "socketUtil.h"
 
+void setHttpHeader(char httpHeader[])
+{
+    // File object to return
+    FILE *htmlData = fopen("../web-page/index.html", "r");
+
+    char line[100];
+    char responseData[8000];
+    while (fgets(line, 100, htmlData) != 0) {
+        strcat(responseData, line);
+    }
+    // char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
+    strcat(httpHeader, responseData);
+}
+
 int main(int argc, char **argv){
 
+    char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
     int listen_SocketFD, connection_FD, n;
     struct sockaddr_in *server_Address;
     uint8_t buff[MAX_LINE + 1];
@@ -24,6 +39,7 @@ int main(int argc, char **argv){
     if(listen(listen_SocketFD, 10) < 0){
         exit_Error("Error de escucha.");
     }
+    setHttpHeader(httpHeader);
 
     while(true){
         struct sockaddr_in addr;
@@ -51,7 +67,8 @@ int main(int argc, char **argv){
         if(n < 0){
             exit_Error("Error de lectura");
         }
-        snprintf((char*) buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nHELLO!\n\n");
+            //snprintf((char*) buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nHELLO!\n\n");
+            send(clientSocket, httpHeader, sizeof(httpHeader), 0);
 
         write(connection_FD, (char*) buff, strlen((char*) buff));
         close(connection_FD);
