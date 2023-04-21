@@ -27,7 +27,7 @@ int main(int argc, char **argv){
         "Spiderman", "abcdefghij"
     };
     char *get_type[] = {
-        "GET / "
+        "GET / ",
         "GET /data",
         "GET /set?"
     };
@@ -70,9 +70,12 @@ int main(int argc, char **argv){
         n = read(connection_FD, recv_Line, MAX_LINE-1);
         char* x;
         int type;
-        for(int i = 0; i < sizeof(*get_type); i++){
+        for(int i = 0; i < 3; i++){
             x = strstr(recv_Line, get_type[i]);
-            type = i;
+            if(x != NULL){
+                type = i;
+                break;
+            }
         }
         while(n > 0){
             fprintf(stdout, "\n\n%s", /*bin2hex(recv_Line, n) */ recv_Line);
@@ -101,22 +104,32 @@ int main(int argc, char **argv){
                 }
                 break;
             case 2:
+                char *token = strtok(recv_Line, " ");
+                char *movie;
+                while(token != NULL){
+                    movie = strstr(token, "set?");
+                    if(movie != NULL){break;}
+                    token = strtok(NULL, " "); 
+                }
+                movie = strtok(movie, "?");
+                movie = strtok(NULL, "?"); 
+
+                send(connection_FD, movie, strlen(movie), 0);
                 break;
             default:
                 break;
         }
-        if(x != NULL){
-            for(int i = 0; i < 6; i++){
-                send(connection_FD, movies[i], strlen(movies[i]), 0);
-                send(connection_FD, ", ", strlen(", "), 0);
-                if(i % 2 != 0){
-                    send(connection_FD, "\n", strlen("\n"), 0);
-                }
-            }
-        }else{
-            send(connection_FD, httpHeader, sizeof(httpHeader), 0);
-        }
-
+        // if(x != NULL){
+        //     for(int i = 0; i < 6; i++){
+        //         send(connection_FD, movies[i], strlen(movies[i]), 0);
+        //         send(connection_FD, ", ", strlen(", "), 0);
+        //         if(i % 2 != 0){
+        //             send(connection_FD, "\n", strlen("\n"), 0);
+        //         }
+        //     }
+        // }else{
+        //     send(connection_FD, httpHeader, sizeof(httpHeader), 0);
+        // }
         close(connection_FD);
     }
 }

@@ -1,118 +1,153 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html lang="es-MX">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="author" content="Felipe Marcial" />
-    <meta
-      name="description"
-      content="Este sitio web fue creado con el propósito de aprender
-            a manejar servidores web creados con C, utilizando sockets"
-    />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Home Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="../src/style.css" />
-    <link rel="icon" href="../media/icon.png" type="image/png" sizes="16x16" />
-    <script src="../src/my-js-file.js" async defer></script>
-  </head>
+<html>
+	<head>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
 
-  <body>
-    <!--[if lt IE 7]>
-      <p class="browsehappy">
-        You are using an <strong>outdated</strong> browser. Please
-        <a href="#">upgrade your browser</a> to improve your experience.
-      </p>
-    <![endif]-->
+			body > .data {
+				display: inline-block;
+			}
 
-    <!-- Here is our main header that is used across all the pages of our website -->
+			body > .data > * {
+				border: 2px solid black;
+				padding: 1%;
+				white-space: nowrap;
+				width: fit-content;
+			}
 
-    <header>
-      <h1>Header</h1>
-    </header>
+			body > .data > * > * {
+				display: inline-block;
 
-    <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Our team</a></li>
-        <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+				padding-left: 16px;
+				padding-right: 16px;
+			}
 
-      <!-- A Search form is another common non-linear way to navigate through a website. -->
+			body > .data > * > button {
 
-      <form>
-        <input type="search" name="q" placeholder="Search query" />
-        <input type="submit" value="Go!" />
-      </form>
-    </nav>
+			}
 
-    <!-- Here is our page's main content -->
-    <main>
-      <!-- It contains an article -->
-      <article>
-        <h2>Article heading</h2>
+			body > .data > * > .label {
+				border-right: 2px solid black;
+			}
 
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Donec a diam <br />
-          lectus. Set sit amet ipsum mauris. Maecenas congue ligula as quam <br />
-          viverra nec consectetur ant hendrerit. Donec et mollis dolor. Praesent <br />
-          et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt <br />
-          congue enim, ut porta lorem lacinia consectetur.
-        </p>
+			body > .seats {
+				border: 2px solid black;
+				margin-top: 32px;
+				margin-bottom: 32px;
+			}
+		</style>
+		<script>
+			const { host } = window.location;
+			//const host = "localhost/miko0000.github.io/dump"
 
-        <h3>Subsection</h3>
+			async function take(name){
+				const seat = (await fetch(`http://${host}/take?${name}`)
+					.then(r => r.text()))
+					.trim();
+				const ob = JSON.parse(localStorage.getItem("seats") || "{}");
 
-        <p>
-          Donec ut librero sed accu vehicula ultricies a non tortor. Lorem ipsum <br />
-          dolor sit amet, consectetur adipisicing elit. Aenean ut gravida lorem. <br />
-          Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. <br />
-        </p>
+				if(!seat || seat == '-')
+					return alert(`No seats left for the movie: ${name}`);
 
-        <p>
-          Pelientesque auctor nisi id magna consequat sagittis. Curabitur <br />
-          dapibus, enim sit amet elit pharetra tincidunt feugiat nist imperdiet. <br />
-          Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. <br />
-        </p>
+				if(!ob[name])
+					ob[name] = [ seat ];
+				else
+					ob[name].push(seat);
 
-        <h3>Another subsection</h3>
+				localStorage.setItem("seats", JSON.stringify(ob));
 
-        <p>
-          Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum <br />
-          soclis natoque penatibus et manis dis parturient montes, nascetur <br />
-          ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem <br />
-          facilisis semper ac in est.
-        </p>
+				refresh();
+				refresh_seats();
+			}
 
-        <p>
-          Vivamus fermentum semper porta. Nunc diam velit, adipscing ut <br />
-          tristique vitae sagittis vel odio. Maecenas convallis ullamcorper <br />
-          ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi <br />
-          diam iaculis velit, is fringille sem nunc vet mi. <br />
-        </p>
-      </article>
+			function data_handler(data){
+				const el = document.querySelector('.data');
+				el.textContent = '';
 
-      <!-- the aside content can also be nested within the main content -->
-      <aside>
-        <h2>Related</h2>
+				data = data.split(',');
 
-        <ul>
-          <li><a href="#">Oh I do like to be beside the seaside</a></li>
-          <li><a href="#">Oh I do like to be beside the sea</a></li>
-          <li><a href="#">Although in the North of England</a></li>
-          <li><a href="#">It never stops raining</a></li>
-          <li><a href="#">Oh well…</a></li>
-        </ul>
-      </aside>
-    </main>
+				let ll; // longest label
+				let ls; // longest seat
+				for(let i = 0; data[i]; i += 2){
+					data[i] = data[i].trim();
+					data[i + 1] = data[i + 1].trim();
 
-    <!-- And here is our main footer that is used across all the pages of our website -->
+					ll < data[i].length && (ll = data[i].length);
+					ls < `${data[i + 1].length}`.length && (ls = `${data[i + 1].length}`.length);
+				}
 
-    <footer>
-      <p>©Copyright 2050 by nobody. All rights reversed.</p>
-    </footer>
-  </body>
+				for(let i = 0; data[i]; i += 2){
+					const div = document.createElement("div");
+					const label = data[i] + ' '.repeat(ll - data[i].length);
+					const seats = `${data[i + 1].length}`.length + ' '.repeat(ls - `${data[i + 1].length}`.length);
+
+					const label_e = document.createElement("span");
+					const seats_e = document.createElement("span");
+					const button = document.createElement("button");
+
+					button.addEventListener("click", () => take(data[i]));
+					button.textContent = "Take";
+
+					label_e.classList.add("label");
+					seats_e.classList.add("seats");
+
+					label_e.textContent = label;
+					seats_e.textContent = `${seats} seats available`;
+
+					div.appendChild(label_e);
+					div.appendChild(seats_e);
+					div.appendChild(button);
+
+					el.appendChild(div);
+				}
+			}
+
+			function refresh(){
+				fetch(`http://${host}/data`)
+					.then(res => res.text())
+					.then(data_handler);
+			}
+
+			function refresh_seats(){
+				const el = document.querySelector("body > .seats");
+				const ob = JSON.parse(localStorage.getItem("seats"));
+
+				el.textContent = '';
+
+				for(const [ name, seats ] of Object.entries(ob)){
+					const div = document.createElement("div");
+					div.textContent += `Seats: ${seats.join(',')}. For ${name}\n`;
+
+					el.appendChild(div);
+				}
+			}
+
+			function set(key, value){
+				let p = fetch(`http://${host}/set?${key}=${value}`);
+
+				refresh();
+
+				return p;
+			}
+
+			window.addEventListener("load", function(){
+				refresh();
+				refresh_seats();
+			})
+		</script>
+	</head>
+	<body>
+		<h1>Theatre</h1>
+		<h3>Movies</h3>
+		<div class="data">
+
+		</div><br>
+		<h3>Your seats</h3>
+		<div class="seats">
+
+		</div>
+		<button onclick="refresh(); refresh_seats();">Refresh</button>
+	</body>
 </html>
