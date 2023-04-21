@@ -57,7 +57,7 @@ int main(int argc, char **argv){
         memset(recv_Line, 0, MAX_LINE);
         n = read(connection_FD, recv_Line, MAX_LINE-1);
         while(n > 0){
-            fprintf(stdout, "\n\n%s", /*bin2hex(recv_Line, n)*/ recv_Line);
+            fprintf(stdout, "\n\n%s", /*bin2hex(recv_Line, n) uwu*/ recv_Line);
             if(recv_Line[n-1] == '\n'){
                 break;
             }
