@@ -66,7 +66,7 @@
 				const el = document.querySelector('.data');
 				el.textContent = '';
 
-				data = data.split(',');
+				data = data.trim().split(',');
 
 				let ll; // longest label
 				let ls; // longest seat
@@ -81,7 +81,7 @@
 				for(let i = 0; data[i]; i += 2){
 					const div = document.createElement("div");
 					const label = data[i] + ' '.repeat(ll - data[i].length);
-					const seats = `${data[i + 1].length}`.length + ' '.repeat(ls - `${data[i + 1].length}`.length);
+					const seats = `${data[i + 1].length}` + ' '.repeat(ls - `${data[i + 1].length}`.length);
 
 					const label_e = document.createElement("span");
 					const seats_e = document.createElement("span");
@@ -112,7 +112,7 @@
 
 			function refresh_seats(){
 				const el = document.querySelector("body > .seats");
-				const ob = JSON.parse(localStorage.getItem("seats"));
+				const ob = JSON.parse(localStorage.getItem("seats") || "{}");
 
 				el.textContent = '';
 

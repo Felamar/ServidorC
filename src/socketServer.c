@@ -96,8 +96,8 @@ int main(int argc, char **argv){
                 break;
             case 1:
                 for(int i = 0; i < 6; i++){
-                    send(connection_FD, movies[i], strlen(movies[i]), 0);
-                    send(connection_FD, ", ", strlen(", "), 0);
+                    write(connection_FD, movies[i], strlen(movies[i]));
+                    write(connection_FD, ", ", strlen(", "));
                     if(i % 2 != 0){
                         send(connection_FD, "\n", strlen("\n"), 0);
                     }
@@ -114,7 +114,18 @@ int main(int argc, char **argv){
                 movie = strtok(movie, "?");
                 movie = strtok(NULL, "?"); 
 
-                send(connection_FD, movie, strlen(movie), 0);
+                for(int i = 0; i < 6; i+= 2){
+                    if(strcmp(movies[i], movie) == 0){
+
+                        write(connection_FD, movies[i+1] + strlen(movies[i+1]) - 1, sizeof(char));
+                        
+                        fprintf(stdout, "\n\n%s", "well done 2");
+                        movies[i+1][strlen(movies[i+1]) - 1] = '\0';
+
+                        fprintf(stdout, "\n\n%s", "well done 3");
+                    }
+                }
+
                 break;
             default:
                 break;
