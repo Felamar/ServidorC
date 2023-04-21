@@ -57,7 +57,7 @@ int main(int argc, char **argv){
         memset(recv_Line, 0, MAX_LINE);
         n = read(connection_FD, recv_Line, MAX_LINE-1);
         while(n > 0){
-            fprintf(stdout, "\n%s\n\n%s", bin2hex(recv_Line, n), recv_Line);
+            fprintf(stdout, "\n\n%s", /*bin2hex(recv_Line, n)*/ recv_Line);
             if(recv_Line[n-1] == '\n'){
                 break;
             }
@@ -68,7 +68,7 @@ int main(int argc, char **argv){
             exit_Error("Error de lectura");
         }
             //snprintf((char*) buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nHELLO!\n\n");
-            send(clientSocket, httpHeader, sizeof(httpHeader), 0);
+            send(connection_FD, httpHeader, sizeof(httpHeader), 0);
 
         write(connection_FD, (char*) buff, strlen((char*) buff));
         close(connection_FD);
