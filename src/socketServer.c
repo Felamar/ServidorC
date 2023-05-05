@@ -21,21 +21,21 @@ void setHttpHeader(char httpHeader[])
 
 int main(int argc, char **argv){
 
-    char movie_titles[] = {
-        "The Godfather (1972)",
-        "Pull Fiction (1994)",
-        "The Big Lebowski (1998)",
-        "Blade Runner (1982)",
-        "Fight Club (1999)"
-    };
+    char *movie_titles = 
+        "The Godfather (1972)\n
+        Pulp Fiction (1994)\n
+        The Big Lebowski (1998)\n
+        Blade Runner (1982)\n
+        Fight Club (1999)"
+    ;
 
-    char movie_description[] = {
-        "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-        "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
-        "Jeff \"The Dude\" Lebowski, mistaken for a millionaire of the same name, seeks restitution for his ruined rug and enlists his bowling buddies to help get it.",
-        "A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator.",
-        "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."
-    };
+    char *movie_description = 
+        "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.\n
+        The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.\n
+        Jeff \"The Dude\" Lebowski, mistaken for a millionaire of the same name, seeks restitution for his ruined rug and enlists his bowling buddies to help get it.\n
+        A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator.\n
+        An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."
+    ;
 
     char *get_type[] = {
         "GET / ",
@@ -44,22 +44,23 @@ int main(int argc, char **argv){
     };
 
     char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
-    int listen_SocketFD, connection_FD, n;
+    int client_SocketFD, connection_FD, n;
     struct sockaddr_in *server_Address;
     uint8_t buff[MAX_LINE + 1];
     uint8_t recv_Line[MAX_LINE + 1];
     uint8_t reqType_Line[MAX_LINE + 1];
 
-    listen_SocketFD = createSocket();
-    if(listen_SocketFD < 0){
+    client_SocketFD = createSocket();
+    if(client_SocketFD < 0){
         exit_Error("Error al crear socket.");
     }
 
     server_Address = createAddress("");
-    if((bind(listen_SocketFD, (S_A *) server_Address, sizeof(*server_Address))) < 0){
+    if((bind(client_SocketFD, (S_A *) server_Address, sizeof(*server_Address))) < 0){
         exit_Error("Error de unión");
     }
-    if(listen(listen_SocketFD, 10) < 0){
+
+    if(listen(client_SocketFD, 10) < 0){
         exit_Error("Error de escucha.");
     }
     setHttpHeader(httpHeader);
@@ -72,7 +73,7 @@ int main(int argc, char **argv){
 
         printf("Esperando por una conexión en el puerto %d\n", SERVER_PORT);
         fflush(stdout);
-        connection_FD = accept(listen_SocketFD, (S_A *) &addr, &addr_Len);
+        connection_FD = accept(client_SocketFD, (S_A *) &addr, &addr_Len);
         
         inet_ntop(AF_INET, &addr, client_address, MAX_LINE);
         printf("Client connection: %s\n", client_address);

@@ -17,7 +17,7 @@
 #include <netdb.h>
 #include <stdbool.h>
 
-#define SERVER_PORT 5000
+#define PORT 5000
 #define MAX_LINE 4096
 #define S_A struct sockaddr
 
