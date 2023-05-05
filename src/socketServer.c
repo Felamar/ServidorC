@@ -8,7 +8,7 @@
 void setHttpHeader(char httpHeader[])
 {
     // File object to return
-    FILE *htmlData = fopen("../web-page/index.html", "r");
+    FILE *htmlData = fopen("../html/index.html", "r");
 
     char line[100];
     char responseData[8000];
@@ -21,11 +21,22 @@ void setHttpHeader(char httpHeader[])
 
 int main(int argc, char **argv){
 
-    char *movies[] = {
-        "Batman", "abcdefghij",
-        "Superman", "abcdefghij",
-        "Spiderman", "abcdefghij"
+    char movie_titles[] = {
+        "The Godfather (1972)",
+        "Pull Fiction (1994)",
+        "The Big Lebowski (1998)",
+        "Blade Runner (1982)",
+        "Fight Club (1999)"
     };
+
+    char movie_description[] = {
+        "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+        "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "Jeff \"The Dude\" Lebowski, mistaken for a millionaire of the same name, seeks restitution for his ruined rug and enlists his bowling buddies to help get it.",
+        "A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator.",
+        "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."
+    };
+
     char *get_type[] = {
         "GET / ",
         "GET /data",
@@ -130,17 +141,7 @@ int main(int argc, char **argv){
             default:
                 break;
         }
-        // if(x != NULL){
-        //     for(int i = 0; i < 6; i++){
-        //         send(connection_FD, movies[i], strlen(movies[i]), 0);
-        //         send(connection_FD, ", ", strlen(", "), 0);
-        //         if(i % 2 != 0){
-        //             send(connection_FD, "\n", strlen("\n"), 0);
-        //         }
-        //     }
-        // }else{
-        //     send(connection_FD, httpHeader, sizeof(httpHeader), 0);
-        // }
+
         close(connection_FD);
     }
 }

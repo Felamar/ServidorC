@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Movie Seat Selection</title>
+    <link rel="stylesheet" type="text/css" href="../css/bookin_style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Select Your Seats</h1>
+      <h2 class="movie-title"></h2>
+      <img class="movie-poster" src="" alt="" />
+      <p class="movie-description"></p>
+      
+      
+      <p class="screen">Screen</p>
+      <div class="seat-map">
+        <div class="row">
+          <div class="seat" data-row="A" data-col="1">
+            <span class="seat-number">A1</span>
+          </div>
+          <div class="seat" data-row="A" data-col="2">
+            <span class="seat-number">A2</span>
+          </div>
+          <div class="seat" data-row="A" data-col="3">
+            <span class="seat-number">A3</span>
+          </div>
+          <div class="seat" data-row="A" data-col="4">
+            <span class="seat-number">A4</span>
+          </div>
+          <div class="seat" data-row="A" data-col="5">
+            <span class="seat-number">A5</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="seat" data-row="B" data-col="1">
+            <span class="seat-number">B1</span>
+          </div>
+          <div class="seat" data-row="B" data-col="2">
+            <span class="seat-number">B2</span>
+          </div>
+          <div class="seat" data-row="B" data-col="3">
+            <span class="seat-number">B3</span>
+          </div>
+          <div class="seat" data-row="B" data-col="4">
+            <span class="seat-number">B4</span>
+          </div>
+          <div class="seat" data-row="B" data-col="5">
+            <span class="seat-number">B5</span>
+          </div>
+        </div>
+        
+      </div>
+      <div class="example-info">
+        <div class="example selected"></div>
+        <span>Selected Seat</span>
+        <div class="example"></div>
+        <span>Available Seat</span>
+        <div class="example occupied"></div>
+        <span>Occupied Seat</span>
+      </div>
+      <div class="seat-details">
+        <p>Selected Seats: <span class="count">0</span></p>
+        <p>Selected Seat Numbers: <span class="selected-seats"></span></p>
+      </div>
+    </div>
+    <script src="../js/booking_script.js"></script>
+  </body>
+</html>
