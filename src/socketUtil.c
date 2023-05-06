@@ -7,6 +7,7 @@ movie movies[] = {
     {"Blade Runner (1982)", "A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator."},
     {"Fight Club (1999)", "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."}
 };
+
 char* movieToJSON(movie m) {
     char *json = malloc(MAX_LINE * sizeof(char));
     sprintf(json, "{\"title\":\"%s\",\"description\":\"%s\"}", m.title, m.description);
@@ -59,6 +60,15 @@ void handleRequest(int client_fd, char *request)
         serveFile(client_fd, "../js/index_script.js");
     }
 
+    else if (strncmp(path, "/media/", 5) == 0)
+    {
+        char *filename = "..";
+        filename = strcat(filename, path);
+
+        // Serve the image file
+        serveImage(client_fd, filename);
+    }
+
     else if (strcmp(path, "/movies") == 0)
     {
         // Send the movie data
@@ -76,7 +86,16 @@ void handleRequest(int client_fd, char *request)
 void serveFile(int client_fd, char *filename)
 {
     // Open the file for reading
-    FILE *file = fopen(filename, "r");
+    
+    FILE *file;
+    if (strstr(filename, "media") != NULL)
+    {
+        file = fopen(filename, "rb");
+    }
+    else
+    {
+        file = fopen(filename, "r");
+    }
 
     if (file != NULL)
     {
@@ -124,6 +143,14 @@ char *getMimeType(char *filename)
         else if (strcmp(extension, ".js") == 0)
         {
             return "application/javascript";
+        }
+        else if (strcmp(extension, ".jpg") == 0)
+        {
+            return "image/jpeg";
+        }
+        else if (strcmp(extension, ".png") == 0)
+        {
+            return "image/png";
         }
     }
     return "application/octet-stream";
