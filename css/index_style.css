@@ -9,7 +9,7 @@ body {
 	padding: 20px;
 	border-radius: 3px;
 	background-color: #111111;
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* increased blur value */
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); 
 }
 
 h1 {
@@ -28,7 +28,7 @@ h1 {
 .movie {
 	background-color: #1c1c1c;
 	border-radius: 3px;
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* increased blur value */
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); 
 	margin: 20px;
 	width: 400px;
 	display: flex;

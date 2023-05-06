@@ -25,8 +25,14 @@
 typedef struct movie {
   char *title;
   char *description;
-  char *poster;
+  showtime showtimes[4];
 } movie;
+
+typedef struct showtime {
+  char *time;
+  bool seats[2][5];
+} showtime;
+
 void sendMovieData(movie movies[], int client_fd);
 void handleRequest(int client_fd, char *request);
 void serveFile(int client_fd, char *filename);
