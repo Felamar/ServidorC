@@ -62,11 +62,14 @@ void handleRequest(int client_fd, char *request)
 
     else if (strncmp(path, "/media/", 5) == 0)
     {
-        char *filename = "..";
+        char *filename = malloc(MAX_LINE * sizeof(char));
+        memset(filename, 0, MAX_LINE);
+        filename = strcpy(filename, "..");
         filename = strcat(filename, path);
 
         // Serve the image file
-        serveImage(client_fd, filename);
+        char* decodedFN = decodeURL(filename);
+        serveFile(client_fd, decodedFN);
     }
 
     else if (strcmp(path, "/movies") == 0)
@@ -85,8 +88,7 @@ void handleRequest(int client_fd, char *request)
 
 void serveFile(int client_fd, char *filename)
 {
-    // Open the file for reading
-    
+    printf("Serving file: %s\n", filename);
     FILE *file;
     if (strstr(filename, "media") != NULL)
     {
@@ -96,6 +98,7 @@ void serveFile(int client_fd, char *filename)
     {
         file = fopen(filename, "r");
     }
+    
 
     if (file != NULL)
     {
@@ -159,4 +162,23 @@ char *getMimeType(char *filename)
 void sendResponse(int client_fd, char *response)
 {
     send(client_fd, response, strlen(response), 0);
+}
+char* decodeURL(char* url) {
+    char* result = malloc(strlen(url) + 1);  // Allocate memory for the result string
+    if (!result) {
+        return NULL;
+    }
+
+    int i, j = 0;
+    for (i = 0; url[i] != '\0'; i++) {
+        if (strncmp(&url[i], "%20", 3) == 0) {
+            result[j++] = ' ';
+            i += 2;
+        } else {
+            result[j++] = url[i];
+        }
+    }
+
+    result[j] = '\0';
+    return result;
 }

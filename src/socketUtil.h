@@ -32,5 +32,6 @@ void handleRequest(int client_fd, char *request);
 void serveFile(int client_fd, char *filename);
 char* getMimeType(char *filename);
 void sendResponse(int client_fd, char *response);
+char* decodeURL(char *url);
 
 #endif 
