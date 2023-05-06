@@ -16,7 +16,7 @@ xhr.onload = () => {
   movieData.forEach((data) => {
     const { title, description } = data;
 
-    if (title.trim() !== "") { 
+    if (title.trim() !== "") {
       const movie = document.createElement("div");
       movie.classList.add("movie");
       movie.innerHTML = `
@@ -24,12 +24,12 @@ xhr.onload = () => {
           src="../media/${encodeURIComponent(title)}.jpg"
           alt="${title} Poster"
         />
-        <h2>${title}</h2>
-        <p>${description}</p>
-        <a href="booking.html?movie=${encodeURIComponent(
-          title
-        )}" class="btn">Book Now</a>
-      `;
+        <div class="movie-details">
+          <h2 class="movie-title">${title}</h2>
+          <p class="movie-desc">${description.substr(0, 100)}...</p>
+          <a href="booking.html?movie=${encodeURIComponent(title)}" class="movie-btn">Book Now</a>
+        </div>
+        `;
       movieList.appendChild(movie);
     }
   });
