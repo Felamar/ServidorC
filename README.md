@@ -8,13 +8,13 @@ This repository contains a testing version of the ServidorC program. The purpose
 
 To install the ServidorC program, you will need to clone the repository to your local machine. You can do this by running the following command in your terminal:
 
-```
+```bash
 git clone https://github.com/Felamar/ServidorC.git
 ```
 
 Once you have cloned the repository, you will need to navigate to the `ServidorC` directory and compile it manually. You can do this by running the following commands in your terminal:
 
-```
+```bash
 ~$ cd ServidorC/src
 ~$ gcc -o ../build/servidor servidor.c socketUtil.h
 ```
@@ -22,7 +22,7 @@ Once you have cloned the repository, you will need to navigate to the `ServidorC
 ## Usage
 
 This server simulates a ticket selling page for a movie theater. To start the server, run the following command in your terminal:
-```
+```bash
 ../build/servidor
 ```
 Once the server is running, you can use a web browser to connect to it at http://localhost:5000. The server provides a simple web page that allows users to view available movies and purchase tickets for a specific showing.
