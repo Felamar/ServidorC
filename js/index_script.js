@@ -1,14 +1,7 @@
-const socket = new WebSocket("ws://localhost:5000");
-
-socket.addEventListener("open", () => {
-  console.log("Socket connection established");
-
-  // Request movie titles from server
-  socket.send("get_movie_titles");
-});
-
-socket.addEventListener("message", (event) => {
-  console.log("Received movie titles from server");
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "http://localhost:5000/movies");
+xhr.onload = () => {
+  console.log("Received movie data from server");
   const movieList = document.querySelector(".movie-list");
 
   // Remove existing movie elements from list
@@ -16,11 +9,13 @@ socket.addEventListener("message", (event) => {
     movieList.removeChild(movieList.firstChild);
   }
 
-  // Parse movie titles from server response
-  const movieTitles = event.data.split("\n");
+  // Parse movie data from server response
+  const movieData = JSON.parse(xhr.responseText);
 
   // Create new movie element for each title
-  movieTitles.forEach((title) => {
+  movieData.forEach((data) => {
+    const { title, description } = data;
+
     if (title.trim() !== "") { 
       const movie = document.createElement("div");
       movie.classList.add("movie");
@@ -30,7 +25,7 @@ socket.addEventListener("message", (event) => {
           alt="${title} Poster"
         />
         <h2>${title}</h2>
-        <p>Description of ${title} goes here.</p>
+        <p>${description}</p>
         <a href="booking.html?movie=${encodeURIComponent(
           title
         )}" class="btn">Book Now</a>
@@ -38,12 +33,8 @@ socket.addEventListener("message", (event) => {
       movieList.appendChild(movie);
     }
   });
-});
-
-socket.addEventListener("close", () => {
-  console.log("Socket connection closed");
-});
-
-socket.addEventListener("error", (error) => {
-  console.error("Socket error:", error);
-});
+};
+xhr.onerror = (error) => {
+  console.error("XHR error:", error);
+};
+xhr.send();

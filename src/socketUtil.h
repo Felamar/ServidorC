@@ -16,14 +16,21 @@
 #include <sys/ioctl.h>
 #include <netdb.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #define PORT 5000
 #define MAX_LINE 4096
 #define S_A struct sockaddr
 
-int createSocket();
-struct sockaddr_in* createAddress(char* IP);
-void exit_Error(const char *format, ...);
-char *bin2hex(const unsigned char *input, size_t len);
+typedef struct movie {
+  char *title;
+  char *description;
+  char *poster;
+} movie;
+void sendMovieData(movie movies[], int client_fd);
+void handleRequest(int client_fd, char *request);
+void serveFile(int client_fd, char *filename);
+char* getMimeType(char *filename);
+void sendResponse(int client_fd, char *response);
 
 #endif 

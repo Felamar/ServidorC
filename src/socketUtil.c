@@ -1,68 +1,135 @@
-/* 
-    MUST COMPILE AS: gcc -o socketClient socketClient.c socketUtil.c
-*/
-
 #include "socketUtil.h"
 
-int createSocket(){
-    return socket(AF_INET, SOCK_STREAM, 0);
+movie movies[] = {
+    {"The Godfather (1972)", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son."},
+    {"Pulp Fiction (1994)", "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption."},
+    {"The Big Lebowski (1998)", "Jeff \'The Dude\' Lebowski, mistaken for a millionaire of the same name, seeks restitution for his ruined rug and enlists his bowling buddies to help get it."},
+    {"Blade Runner (1982)", "A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator."},
+    {"Fight Club (1999)", "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."}
+};
+char* movieToJSON(movie m) {
+    char *json = malloc(MAX_LINE * sizeof(char));
+    sprintf(json, "{\"title\":\"%s\",\"description\":\"%s\"}", m.title, m.description);
+    return json;
 }
 
-struct sockaddr_in* createAddress(char* IP){
-    /* Apartamos memoria para nuestra dirección */
-    struct sockaddr_in *address = malloc(sizeof(struct sockaddr_in));
-
-    /* Llenamos de ceros a la dirección */
-    bzero(address, sizeof(struct sockaddr_in));
-
-    /* Inicializamos la dirección */
-    address->sin_family = AF_INET;
-    address->sin_port = htons(SERVER_PORT);
-
-    if(strlen(IP) == 0){
-        address->sin_addr.s_addr = htonl(INADDR_ANY);
+void sendMovieData(movie movies[], int client_fd)
+{   
+    char *data = malloc(MAX_LINE * sizeof(char));
+    memset(data, 0, MAX_LINE);
+    data = strcpy(data, "[");
+    for (int i = 0; i < 5; i++)
+    {
+        char *json = movieToJSON(movies[i]);
+        data = strcat(data, json);
+        free(json);
+        if (i < 4)
+        {
+            data = strcat(data, ",");
+        }
     }
-    else if(inet_pton(AF_INET, IP, &address->sin_addr) <= 0){
-        exit_Error("inet_pton error por %s", IP);
-    }
-    return address;
+    data = strcat(data, "]");
+    char headers[100];
+    sprintf(headers, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %ld\r\n\r\n", strlen(data));
+    sendResponse(client_fd, headers);
+    sendResponse(client_fd, data);
+    free(data);
 }
 
-void exit_Error(const char *format, ...){
-    int error_No;
-    va_list args;
-    error_No = errno;
-    
-    va_start(args, format);
-    vfprintf(stdout, format, args);
-    fprintf(stdout, "\n");
-    fflush(stdout);
+void handleRequest(int client_fd, char *request)
+{
+    // Parse the request
+    char method[10], path[100], protocol[10];
+    sscanf(request, "%s %s %s", method, path, protocol);
+    printf("\n#######################\n\nReceived request: %s\n\n#######################\n", path);
 
-    if(error_No != 0){
-        fprintf(stdout, "(Error no. = %d) : %s \n", error_No, strerror(error_No));
-        fflush(stdout);
+    // Check if the request is for the index page
+    if (strcmp(path, "/") == 0)
+    {
+        serveFile(client_fd, "../html/index.html");
     }
-    va_end(args);
-    exit(1);
+
+    else if (strcmp(path, "/css/index_style.css") == 0)
+    {
+        serveFile(client_fd, "../css/index_style.css");
+    }
+
+    else if (strcmp(path, "/js/index_script.js") == 0)
+    {
+        serveFile(client_fd, "../js/index_script.js");
+    }
+
+    else if (strcmp(path, "/movies") == 0)
+    {
+        // Send the movie data
+        sendMovieData(movies, client_fd);
+    }
+
+    else
+    {
+        // Send a 404 Not Found response
+        sendResponse(client_fd, "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
+    }
+
 }
 
-char *bin2hex(const unsigned char *input, size_t len){
-    char *result;
-    char *hex_Its = "0123456789ABCDEF";
+void serveFile(int client_fd, char *filename)
+{
+    // Open the file for reading
+    FILE *file = fopen(filename, "r");
 
-    if(input == NULL || len <= 0){
-        return NULL;
+    if (file != NULL)
+    {
+        // Get the file size
+        fseek(file, 0, SEEK_END);
+        int size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+
+        // Send the HTTP headers
+        char headers[100];
+        sprintf(headers, "HTTP/1.1 200 OK\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n", getMimeType(filename), size);
+        sendResponse(client_fd, headers);
+
+        // Send the file contents
+        char buffer[MAX_LINE];
+        int bytesRead;
+        while ((bytesRead = fread(buffer, 1, MAX_LINE, file)) > 0)
+        {
+            send(client_fd, buffer, bytesRead, 0);
+        }
+
+        // Close the file
+        fclose(file);
     }
-    int result_Len = (len * 3) + 1;
-
-    result = malloc(result_Len);
-    bzero(result, result_Len);
-
-    for(int i = 0; i < len; i++){
-        result[i * 3] = hex_Its[input[i] >> 4];
-        result[ (i * 3) + 1 ] = hex_Its[input[i] & 0x0F];
-        result[ (i * 3) + 2 ] = ' ';
+    else
+    {
+        // Send a 404 Not Found response
+        sendResponse(client_fd, "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
     }
-    
-    return result;
+}
+
+char *getMimeType(char *filename)
+{
+    char *extension = strrchr(filename, '.');
+    if (extension != NULL)
+    {
+        if (strcmp(extension, ".html") == 0)
+        {
+            return "text/html";
+        }
+        else if (strcmp(extension, ".css") == 0)
+        {
+            return "text/css";
+        }
+        else if (strcmp(extension, ".js") == 0)
+        {
+            return "application/javascript";
+        }
+    }
+    return "application/octet-stream";
+}
+
+void sendResponse(int client_fd, char *response)
+{
+    send(client_fd, response, strlen(response), 0);
 }
