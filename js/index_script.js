@@ -18,7 +18,8 @@ xhr.onload = () => {
 
   /* Se crea un elemento HTML para cada película y se añade a la lista de películas */
   movieData.forEach((data) => {
-    const { title, description, showtime } = data;
+    const { title, description, showtimes } = data;
+    console.log(title, description, showtimes);
 
     if (title.trim() !== "") {
       const movie = document.createElement("div");

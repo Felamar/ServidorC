@@ -22,22 +22,25 @@
 #define MAX_LINE 4096
 #define S_A struct sockaddr
 
+typedef struct showtime {
+  char *time;
+  bool seats[10];
+} showtime;
+
 typedef struct movie {
   char *title;
   char *description;
   showtime showtimes[4];
 } movie;
 
-typedef struct showtime {
-  char *time;
-  bool seats[2][5];
-} showtime;
-
-void sendMovieData(movie movies[], int client_fd);
+void sendMovieData(movie movies[], int client_fd, int n_movies);
 void handleRequest(int client_fd, char *request);
 void serveFile(int client_fd, char *filename);
 char* getMimeType(char *filename);
 void sendResponse(int client_fd, char *response);
 char* decodeURL(char *url);
-
+char *movieToJSON(movie m);
+void assignShowTimes(movie *m);
+char *showtimeToJSON();
+void setSeatsValues(char **details);
 #endif 
