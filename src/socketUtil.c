@@ -27,7 +27,7 @@ movie movies[] = {
     {"Blade Runner (1982)", "A blade runner must pursue and terminate four replicants who stole a ship in space, and have returned to Earth to find their creator."},
     {"Fight Club (1999)", "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."}
 };
-
+writeJSONFILE();
 /*  Esta función interpreta el método HTTP utilizado, el path solicitado y el protocolo enviado por el clienta. 
     Luego, llama a la función correspondiente para manejar la petición.                                         */
 
@@ -111,6 +111,7 @@ void handleRequest(int client_fd, char *request){
             token = strtok(NULL, "/");
         }
         setSeatsValues(details);
+        writeJSONFILE();
     }
 
     else{                                                 /* Cualquier otro path */
@@ -216,6 +217,25 @@ void sendMovieData(movie movies[], int client_fd, int no_movies){
     free(data);
 }
 
+void writeJSONFILE(){
+    char *data = malloc(MAX_LINE * sizeof(char));
+    memset(data, 0, MAX_LINE);
+    data = strcpy(data, "[");
+
+    for (int i = 0; i < 5; i++){
+        char *json = movieToJSON(movies[i]);
+        data = strcat(data, json);
+        free(json);
+        if (i < 4){  data = strcat(data, ",");  }
+    }
+
+    data = strcat(data, "]");
+
+    FILE *file = fopen("movies.json", "w");
+    fprintf(file, "%s", data);
+    fclose(file);
+    free(data);
+}
 
 /* Esta función asigna los horarios de las películas y la disponibilidad de asientos. */
 void assignShowTimes(movie *m){
