@@ -19,6 +19,8 @@ void setSeatsValues(char **details, int client_fd, movie* movies){
             break;
         }
     }
+    char* asientos = malloc(MAX_LINE);
+    asientos = strcpy(asientos, details[2]);
     token = strtok(details[2], ",");
     movie *movie_ptr = movies + index_of_movie;
     int no_of_seats = 0;
@@ -32,7 +34,7 @@ void setSeatsValues(char **details, int client_fd, movie* movies){
     if (file != NULL) {
         fprintf(file, "Película: %s\n", details[0]);
         fprintf(file, "Horario:  %s\n", details[1]);
-        fprintf(file, "Asientos: %s\n", details[2]);
+        fprintf(file, "Asientos: %s\n", asientos);
         fprintf(file, "Total:    $%d\n", no_of_seats * 10);
         fclose(file);
     } else {
