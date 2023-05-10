@@ -1,7 +1,36 @@
 #include "socketUtil.h"
+showtime showtimes[4] = {
+    /* columns    1     2     3     4     5                */
+    {"12:10", {
+                  true, true, true, true, true, /*  row A  */
+                  true, true, true, true, true  /*  row B  */
+              }},
+    {"15:20", {
+                  true, true, true, true, true, /*  row A  */
+                  true, true, true, true, true  /*  row B  */
+              }},
+    {"18:30", {
+                  true, true, true, true, true, /*  row A  */
+                  true, true, true, true, true  /*  row B  */
+              }},
+    {"21:40", {
+                  true, true, true, true, true, /*  row A  */
+                  true, true, true, true, true  /*  row B  */
+              }}};
 
-int main(int argc, char const *argv[])
-{
+movie movies[] = {
+    {"El Padrino (1972)", "El anciano patriarca de una dinastía del crimen organizado transfiere el control de su imperio clandestino a su reacio hijo."},
+    {"Tiempos Violentos(1994)", "Las vidas de dos sicarios de la mafia, un boxeador, un gángster y su esposa, y un par de bandidos comensales se entrelazan en cuatro historias de violencia y redención."},
+    {"El Gran Lebowski (1998)", "Jeff 'The Dude' Lebowski, confundido con un millonario del mismo nombre, busca la restitución de su alfombra arruinada y recluta a sus compañeros de bolos para que lo ayuden a conseguirla."},
+    {"Blade Runner (1982)", "Un corredor de cuchillas debe perseguir y acabar con cuatro replicantes que robaron una nave en el espacio y han regresado a la Tierra para encontrar a su creador."},
+    {"El Club de la Pelea (1999)", "Un oficinista insomne y un fabricante de jabón despreocupado forman un club de lucha clandestino que se convierte en algo mucho, mucho más."}
+};
+
+int main(int argc, char const *argv[]){
+
+    for(int i = 0; i < 5; i++){
+        assignShowTimes(&movies[i], showtimes);
+    }
     /* Se crea el socket del servidor. */
     int server_fd, client_socket, client_request;
     struct sockaddr_in address;
@@ -53,7 +82,7 @@ int main(int argc, char const *argv[])
         client_request = read(client_socket, buffer, MAX_LINE);
 
         /* Se maneja la petición del cliente. */
-        handleRequest(client_socket, buffer);
+        handleRequest(client_socket, buffer, movies);
 
         /* Se cierra la conexión con el cliente. */
         close(client_socket);

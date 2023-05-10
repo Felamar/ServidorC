@@ -34,13 +34,13 @@ typedef struct movie {
 } movie;
 
 void sendMovieData(movie movies[], int client_fd, int n_movies);
-void handleRequest(int client_fd, char *request);
+void handleRequest(int client_fd, char *request, movie movies[]);
 void serveFile(int client_fd, char *filename);
 char* getMimeType(char *filename);
 void sendResponse(int client_fd, char *response);
 char* decodeURL(char *url);
 char *movieToJSON(movie m);
-void assignShowTimes(movie *m);
+void assignShowTimes(movie *movies, showtime *showtimes);
 char *showtimeToJSON();
-void setSeatsValues(char **details);
+void setSeatsValues(char **details, int client_fd, movie movies[]);
 #endif 

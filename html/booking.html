@@ -1,7 +1,20 @@
 <!DOCTYPE html>
-<html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="es-MX">
   <head>
-    <title>Movie Seat Selection</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Felipe Marcial" />
+    <meta
+      name="description"
+      content="Este sitio web fue creado con el propósito de aprender
+            a manejar servidores web creados con C, utilizando sockets"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Reserva de Asientos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="../css/booking_style.css" />
   </head>
   <body>
@@ -10,29 +23,29 @@
 
       </section>
       <section class="showtime-info">
-        <h3>Select a Showtime</h3>
-        <label for="showtime-select">Select a showtime:</label>
+        <h3>Selecciona un horario</h3>
+        <label for="showtime-select">Selecciona un horario:</label>
         <select id="showtime-select" name="showtime-select">
         </select>
       </section>
 
-      <h3>Select Your Seats</h3>
-      <p class="screen">Screen</p>
+      <h3>Selecciona tus asientos:</h3>
+      <p class="screen">Pantalla</p>
       <div class="seat-map">
 
       </div>
       <div class="example-info">
         <div class="example selected"></div>
-        <span>Selected Seat</span>
+        <span>Seleccionado</span>
         <div class="example"></div>
-        <span>Available Seat</span>
+        <span>Disponible</span>
         <div class="example occupied"></div>
-        <span>Occupied Seat</span>
+        <span>Ocupado</span>
       </div>
       <div class="seat-details">
-        <p>Selected Seats: <span class="selected-seats-count">0</span></p>
-        <p>Selected Seat Numbers: <span class="selected-seats"></span></p>
-        <button id="checkout-btn">Checkout</button>
+        <p>Número de asientos seleccionados: <span class="selected-seats-count">0</span></p>
+        <p>Asiento seleccionados: <span class="selected-seats"></span></p>
+        <button id="checkout-btn">Pagar</button>
       </div>
     </div>
     <script src="../js/booking_script.js"></script>

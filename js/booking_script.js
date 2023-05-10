@@ -1,8 +1,49 @@
 // Get the movie title from url
 const urlParams = new URLSearchParams(window.location.search);
 const movieTitle = urlParams.get("movie");
+let checkout_json = "";
+let seatsSelected = [];
+let showtimes = [];
 const xhr = new XMLHttpRequest();
 xhr.open("GET", "http://localhost:5000/movies/" + movieTitle);
+
+function markSelectedSeatsAsOccupied() {
+  const selectedSeats = document.querySelectorAll(".seat.selected");
+  for (let i = 0; i < selectedSeats.length; i++) {
+    selectedSeats[i].classList.remove("selected");
+    selectedSeats[i].classList.add("occupied");
+    selectedSeats[i].removeEventListener("click",() => {
+      toggleSeatState(seat);
+      updateSelectedCount();
+    });
+  }
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const selectedSeats = document.querySelectorAll(".seat.selected");
+  const count = selectedSeats.length;
+  document.querySelector(".selected-seats-count").textContent = count;
+  document.querySelector(".selected-seats").textContent = seatsSelected.join(", ");
+}
+
+const xhr_2 = new XMLHttpRequest();
+xhr_2.onload = function () {
+  console.log("Response received");
+  if (xhr_2.status === 200) {
+    console.log("Checkout successful");
+    alert("Checkout successful");
+    markSelectedSeatsAsOccupied();
+    const movieData = JSON.parse(xhr_2.responseText);
+    showtimes = movieData[0].showtimes;
+    console.log(showtimes);
+  } else if (xhr_2.status !== 200) {
+    console.log("Request failed.  Returned status of " + xhr_2.status);
+    alert("Checkout failed");
+  }
+};
+
+
 
 xhr.onload = () => {
   console.log("Información de películas obtenida");
@@ -12,7 +53,6 @@ xhr.onload = () => {
   const checkoutBtn = document.querySelector("#checkout-btn");
   checkoutBtn.addEventListener("click", checkout);
 
-  let seatsSelected = [];
 
   while (movieInfo.firstChild) {
     movieInfo.removeChild(movieInfo.firstChild);
@@ -23,7 +63,8 @@ xhr.onload = () => {
 
   const movieData = JSON.parse(xhr.responseText);
 
-  const { title, description, showtimes } = movieData[0];
+  const { title, description} = movieData[0];
+  showtimes = movieData[0].showtimes;
   console.log(title, description, showtimes);
 
   if (title.trim() !== "") {
@@ -41,7 +82,7 @@ xhr.onload = () => {
 
     for (let i = 0; i < showtimes.length; i++) {
       const option = document.createElement("option");
-      option.text = showtimes[i].time + " hrs";
+      option.text = showtimes[i].time;
       select.add(option);
     }
   }
@@ -58,14 +99,6 @@ xhr.onload = () => {
     }
   }
 
-  function updateSelectedCount() {
-    const selectedSeats = document.querySelectorAll(".seat.selected");
-    const count = selectedSeats.length;
-    document.querySelector(".selected-seats-count").textContent = count;
-    document.querySelector(".selected-seats").textContent =
-      seatsSelected.join(", ");
-  }
-
   displaySeats(showtimes[0].time);
 
   function displaySeats(selectedShowtime) {
@@ -79,10 +112,11 @@ xhr.onload = () => {
     while (seatsMap.firstChild) {
       seatsMap.removeChild(seatsMap.firstChild);
     }
+    console.log(`Showtimes`);
+    console.log(showtimes[index].seats);
     for (let i = 0; i < showtimes[index].seats.length; i += 5) {
       const row = document.createElement("div");
       row.classList.add("row");
-
       for (let j = i; j < i + 5 && j < showtimes[index].seats.length; j++) {
         const seat = document.createElement("div");
         seat.classList.add("seat");
@@ -96,7 +130,7 @@ xhr.onload = () => {
           seat.classList.add("occupied");
         }
         seat.innerHTML = `
-          <span class="seat-number">${j < 5 ? "A" : "B"}${j + 1}</span>
+          <span class="seat-number">${j < 5 ? "A" : "B"}${j >= 5 ? j - 4 : j + 1}</span>
         `;
         row.appendChild(seat);
       }
@@ -125,34 +159,21 @@ xhr.onload = () => {
                                 `The total cost is $${totalSelectedSeats * 10}\n\n` +
                                 `Do you want to proceed to checkout?`);
     if (confirmation) {
-      console.log(JSON.stringify({ movie: movieTitle, time: select.value, seats: seatsSelected}));
-      sendRequestToServer();
+      checkout_json = movieTitle + "/" + select.value + "/" + seatsSelected.join(",");
+      xhr_2.open("POST", "http://localhost:5000/checkout/" + checkout_json);
+      xhr_2.send();
     }
-    
   }
-  sendRequestToServer = () => {
-    // const xhr = new XMLHttpRequest();
-    xhr.open("SET", "http://localhost:5000/checkout");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        console.log("Checkout successful");
-        alert("Checkout successful");
-      } else if (xhr.status !== 200) {
-        console.log("Request failed.  Returned status of " + xhr.status);
-        alert("Checkout failed");
-      }
-    };
-    xhr.send(movieTitle + "/" + select.value + "/" + seatsSelected.join(","));
-    location.reload();
-  };
 };
-  
-
 
 /* Se muestra un mensaje de error en la consola si la petición falla */
 xhr.onerror = (error) => {
   console.error("XHR error:", error);
+};
+
+/* Se muestra un mensaje de error en la consola si la petición falla */
+xhr_2.onerror = (error) => {
+  console.error("XHR 2 error:", error);
 };
 
 xhr.send();
