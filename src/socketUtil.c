@@ -4,107 +4,7 @@
 /*  Esta función interpreta el método HTTP utilizado, el path solicitado y el protocolo enviado por el clienta.
     Luego, llama a la función correspondiente para manejar la petición.                                         */
 
-void handleRequest(int client_fd, char *request, movie movies[]){
-
-    /* Interpreta la petición HTTP del cliente y separa sus tres componentes */ 
-
-    char method[10], path[100], protocol[10];
-    sscanf(request, "%s %s %s", method, path, protocol);
-    printf("\n\n##########################################################################################");
-    printf("\n\nReceived request: %s  %s\n\n", method, path);
-
-    /* Verifica que tipo de petición se recibió y responde adecuadamente */
-
-    if (strcmp(path, "/") == 0){                          /* Indice o página principal */
-        serveFile(client_fd, "../html/index.html");
-    }
-
-    else if (strcmp(path, "/css/index_style.css") == 0){  /* Hoja de estilos */
-        serveFile(client_fd, "../css/index_style.css");
-    }
-
-    else if (strcmp(path, "/js/index_script.js") == 0){   /* Script de la página principal */
-        serveFile(client_fd, "../js/index_script.js");
-    }
-
-    else if (strncmp(path, "/booking.html", 8) == 0){
-        serveFile(client_fd, "../html/booking.html");
-    }
-
-    else if (strcmp(path, "/css/booking_style.css") == 0){
-        serveFile(client_fd, "../css/booking_style.css");
-    }
-
-    else if (strcmp(path, "/js/booking_script.js") == 0){
-        serveFile(client_fd, "../js/booking_script.js");
-    }
-
-    else if (strncmp(path, "/media/", 7) == 0){           /* Archivos multimedia */
-        char *filename = malloc(MAX_LINE * sizeof(char));
-        memset(filename, 0, MAX_LINE);
-        filename = strcpy(filename, "..");
-        filename = strcat(filename, path);
-        char *decodedFN = decodeURL(filename);
-        serveFile(client_fd, decodedFN);
-    }
-
-    else if (strcmp(path, "/movies") == 0){               /* Datos de las películas */
-        sendMovieData(movies, client_fd, 5);
-    }
-
-    else if (strncmp(path, "/movies/", 8) == 0){
-        char *movie_name = malloc(MAX_LINE * sizeof(char));
-        memset(movie_name, 0, MAX_LINE);
-        movie_name = strcpy(movie_name, "");
-        movie_name = strcat(movie_name, &path[8]);
-        char *decodedFN = decodeURL(movie_name);
-        int index;
-        for(int i = 0; i < 5; i++){
-            if(strcmp(decodedFN, movies[i].title) == 0){
-                index = i;
-                break;
-            }
-        }
-        movie temp[1];
-        memcpy(temp, movies + index, sizeof(movie));
-        printf("%s\n", temp[0].title);
-        for(int i = 0; i < 4; i++){
-            printf("%s\n", temp[0].showtimes[i].time);
-            for(int j = 0; j < 10; j++){
-                printf("%d ", temp[0].showtimes[i].seats[j]);
-            }
-        }
-        sendMovieData(temp, client_fd, 1);
-    }
-
-    else if (strncmp(path, "/checkout/", 10) == 0){
-        char *chckout_details = malloc(MAX_LINE * sizeof(char));
-        memset(chckout_details, 0, MAX_LINE);
-        chckout_details = strcpy(chckout_details, "");
-        chckout_details = strcat(chckout_details, &path[10]);
-        char* details[3];
-        char* token;
-        token = strtok(chckout_details, "/");
-        int i = 0;
-        while( token != NULL ) {
-            details[i] = token;
-            token = strtok(NULL, "/");
-            i++;
-        }
-        details[0] = strcpy(details[0], decodeURL(details[0]));
-        setSeatsValues(details, client_fd, movies);
-
-    }
-    else if (strcmp(path, "/favicon.ico") == 0){          /* Icono de la página */
-        serveFile(client_fd, "../media/favicon.ico");
-    }
-    else{                                                 /* Cualquier otro path */
-        sendResponse(client_fd, "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
-    }
-}
-
 void setSeatsValues(char **details, int client_fd, movie movies[]){
-    // printf("Setting seats values...\n");
     int index_of_movie, index_of_time, index_of_seat;
     char *token;
     for (int i = 0; i < 5; i++){
@@ -135,9 +35,6 @@ void setSeatsValues(char **details, int client_fd, movie movies[]){
 /* Esta función envía interpreta el path del archivo solicitado y envía el archivo al cliente. */
 
 void serveFile(int client_fd, char *filename){
-
-    printf("Serving file: %s\n", filename);
-
     FILE *file;
 
     /* Se verifica el tipo de path solicitado. Si es un archivo multimedia, se abre en modo binario. */
@@ -186,7 +83,6 @@ void sendMovieData(movie movies[], int client_fd, int no_movies){
 
     data = strcat(data, "]");
 
-    printf("Sending movie data:\n%s\n", data);
     /* Se envía el header HTTP con el tipo de contenido y el tamaño de los datos. */
     char headers[100];
     sprintf(headers, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %ld\r\n\r\n", strlen(data));
@@ -194,7 +90,6 @@ void sendMovieData(movie movies[], int client_fd, int no_movies){
 
     /* Se envían los datos de las películas al cliente. */
     sendResponse(client_fd, data);
-    // printf("%s\n", data);
     free(data);
 }
 

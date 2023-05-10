@@ -17,6 +17,8 @@
 #include <netdb.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <ncurses.h>
+#include <time.h>
 
 #define PORT 5000
 #define MAX_LINE 4096
@@ -34,7 +36,6 @@ typedef struct movie {
 } movie;
 
 void sendMovieData(movie movies[], int client_fd, int n_movies);
-void handleRequest(int client_fd, char *request, movie movies[]);
 void serveFile(int client_fd, char *filename);
 char* getMimeType(char *filename);
 void sendResponse(int client_fd, char *response);

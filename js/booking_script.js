@@ -33,10 +33,12 @@ xhr_2.onload = function () {
   if (xhr_2.status === 200) {
     console.log("Checkout successful");
     alert("Checkout successful");
-    markSelectedSeatsAsOccupied();
     const movieData = JSON.parse(xhr_2.responseText);
     showtimes = movieData[0].showtimes;
-    console.log(showtimes);
+    console.log(showtimes); 
+    seatsSelected = [];
+    markSelectedSeatsAsOccupied();
+
   } else if (xhr_2.status !== 200) {
     console.log("Request failed.  Returned status of " + xhr_2.status);
     alert("Checkout failed");
