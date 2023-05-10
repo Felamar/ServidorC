@@ -29,7 +29,7 @@ xhr.onload = () => {
         <div class="movie-details">
           <h2 class="movie-title">${title}</h2>
           <p class="movie-desc">${description.substr(0, 100)}...</p>
-          <a href="booking.html?movie=${encodeURIComponent(title)}" class="movie-btn">Book Now</a>
+          <a href="booking.html?movie=${encodeURIComponent(title)}" class="movie-btn">Reservar</a>
         </div>
         `;
       movieList.appendChild(movie);
