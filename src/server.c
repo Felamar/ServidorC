@@ -166,6 +166,11 @@ void handleRequest(int client_fd, char *request, movie movies[]){
         imprimir("Enviando datos de la compra");
         refresh();
     }
+    else if (strcmp(path, "/ticket.txt") == 0){
+        serveFile(client_fd, "ticket.txt");
+        imprimir("Enviando: ticket.txt");
+        refresh();
+    }
     else if (strcmp(path, "/favicon.ico") == 0){          /* Icono de la página */
         serveFile(client_fd, "../media/favicon.ico");
         imprimir("Enviando: favicon.ico");

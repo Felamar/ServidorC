@@ -1,0 +1,4 @@
+Película: El Padrino (1972)
+Horario:  12:10
+Asientos: A1
+Total:    $10

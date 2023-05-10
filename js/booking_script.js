@@ -45,7 +45,18 @@ xhr_2.onload = function () {
   }
 };
 
-
+xhr_3 = new XMLHttpRequest();
+xhr_3.responseType = "blob";
+xhr_3.onload = function () {
+  console.log("Response received");
+  if (xhr_3.status === 200) {
+    var blob = xhr_3.response;
+    var link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = "ticket.txt";
+    link.click();
+}
+};
 
 xhr.onload = () => {
   console.log("Información de películas obtenida");
@@ -164,6 +175,9 @@ xhr.onload = () => {
       checkout_json = movieTitle + "/" + select.value + "/" + seatsSelected.join(",");
       xhr_2.open("POST", "http://localhost:5000/checkout/" + checkout_json);
       xhr_2.send();
+      xhr_3.open("GET", "http://localhost:5000/ticket.txt", true);
+      xhr_3.send();
+      console.log("Checkout successful");
     }
   }
 };

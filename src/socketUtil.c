@@ -21,11 +21,22 @@ void setSeatsValues(char **details, int client_fd, movie* movies){
     }
     token = strtok(details[2], ",");
     movie *movie_ptr = movies + index_of_movie;
-
+    int no_of_seats = 0;
     while (token != NULL){
+        no_of_seats++;
         index_of_seat = ((token[0] - 'A') * 5) + (token[1] - '0' - 1);
         movie_ptr->showtimes[index_of_time].seats[index_of_seat] = false;
         token = strtok(NULL, ",");
+    }
+    FILE *file = fopen("ticket.txt", "w");
+    if (file != NULL) {
+        fprintf(file, "Película: %s\n", details[0]);
+        fprintf(file, "Horario:  %s\n", details[1]);
+        fprintf(file, "Asientos: %s\n", details[2]);
+        fprintf(file, "Total:    $%d\n", no_of_seats * 10);
+        fclose(file);
+    } else {
+        printf("Failed to open the file.\n");
     }
     movie temp[1];  
     memcpy(temp, movies + index_of_movie, sizeof(movie));
@@ -149,6 +160,7 @@ char *getMimeType(char *filename){
         else if (strcmp(extension, ".js")   == 0){ return "application/javascript"  ;}
         else if (strcmp(extension, ".jpg")  == 0){ return "image/jpeg"              ;}
         else if (strcmp(extension, ".png")  == 0){ return "image/png"               ;}
+        else if (strcmp(extension, ".txt")  == 0){ return "text/plain"              ;}
     }
     /* Si no se reconoce la extensión, se retorna el tipo de contenido por defecto. */
     return "application/octet-stream";
