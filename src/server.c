@@ -21,7 +21,7 @@ showtime showtimes[4] = {
 
 movie movies[] = {
     {"El Padrino (1972)", "El anciano patriarca de una dinastía del crimen organizado transfiere el control de su imperio clandestino a su reacio hijo."},
-    {"Tiempos Violentos(1994)", "Las vidas de dos sicarios de la mafia, un boxeador, un gángster y su esposa, y un par de bandidos comensales se entrelazan en cuatro historias de violencia y redención."},
+    {"Tiempos Violentos (1994)", "Las vidas de dos sicarios de la mafia, un boxeador, un gángster y su esposa, y un par de bandidos comensales se entrelazan en cuatro historias de violencia y redención."},
     {"El Gran Lebowski (1998)", "Jeff 'The Dude' Lebowski, confundido con un millonario del mismo nombre, busca la restitución de su alfombra arruinada y recluta a sus compañeros de bolos para que lo ayuden a conseguirla."},
     {"Blade Runner (1982)", "Un corredor de cuchillas debe perseguir y acabar con cuatro replicantes que robaron una nave en el espacio y han regresado a la Tierra para encontrar a su creador."},
     {"El Club de la Pelea (1999)", "Un oficinista insomne y un fabricante de jabón despreocupado forman un club de lucha clandestino que se convierte en algo mucho, mucho más."}
@@ -114,7 +114,7 @@ void handleRequest(int client_fd, char *request, movie movies[]){
         serveFile(client_fd, decodedFN);
         response_string = strcpy(response_string, "");
         response_string = strcpy(response_string, "Enviando poster de: ");
-        response_string = strcat(response_string, &decodedFN[7]);
+        response_string = strcat(response_string, &decodedFN[9]);
         imprimir(response_string);
         refresh();
     }

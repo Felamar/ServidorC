@@ -4,7 +4,7 @@
 /*  Esta función interpreta el método HTTP utilizado, el path solicitado y el protocolo enviado por el clienta.
     Luego, llama a la función correspondiente para manejar la petición.                                         */
 
-void setSeatsValues(char **details, int client_fd, movie movies[]){
+void setSeatsValues(char **details, int client_fd, movie* movies){
     int index_of_movie, index_of_time, index_of_seat;
     char *token;
     for (int i = 0; i < 5; i++){
@@ -29,7 +29,7 @@ void setSeatsValues(char **details, int client_fd, movie movies[]){
     }
     movie temp[1];  
     memcpy(temp, movies + index_of_movie, sizeof(movie));
-    sendMovieData(movies, client_fd, 1);
+    sendMovieData(temp, client_fd, 1);
 }
 
 /* Esta función envía interpreta el path del archivo solicitado y envía el archivo al cliente. */

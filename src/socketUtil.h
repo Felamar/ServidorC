@@ -43,5 +43,5 @@ char* decodeURL(char *url);
 char *movieToJSON(movie m);
 void assignShowTimes(movie *movies, showtime *showtimes);
 char *showtimeToJSON();
-void setSeatsValues(char **details, int client_fd, movie movies[]);
+void setSeatsValues(char **details, int client_fd, movie* movies);
 #endif 

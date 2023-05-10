@@ -61,7 +61,7 @@ xhr.onload = () => {
   }
   while (seatsMap.firstChild) {
     seatsMap.removeChild(seatsMap.firstChild);
-  }
+  } 
 
   const movieData = JSON.parse(xhr.responseText);
 
