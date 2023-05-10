@@ -168,7 +168,13 @@ void handleRequest(int client_fd, char *request, movie movies[]){
     }
     else if (strcmp(path, "/ticket.txt") == 0){
         serveFile(client_fd, "ticket.txt");
+        FILE *fp = fopen("ticket.txt", "r");
+        char *line = malloc(MAX_LINE);
         imprimir("Enviando: ticket.txt");
+        imprimir("Contenido de ticket.txt:");
+        while(fgets(line, MAX_LINE, fp) != NULL){
+            imprimir(line);
+        }
         refresh();
     }
     else if (strcmp(path, "/favicon.ico") == 0){          /* Icono de la página */

@@ -19,8 +19,10 @@ void setSeatsValues(char **details, int client_fd, movie* movies){
             break;
         }
     }
+
     char* asientos = malloc(MAX_LINE);
     asientos = strcpy(asientos, details[2]);
+
     token = strtok(details[2], ",");
     movie *movie_ptr = movies + index_of_movie;
     int no_of_seats = 0;
@@ -30,6 +32,7 @@ void setSeatsValues(char **details, int client_fd, movie* movies){
         movie_ptr->showtimes[index_of_time].seats[index_of_seat] = false;
         token = strtok(NULL, ",");
     }
+    
     FILE *file = fopen("ticket.txt", "w");
     if (file != NULL) {
         fprintf(file, "Película: %s\n", details[0]);
