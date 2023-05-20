@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Felipe Marcial" />
+    <meta
+      name="description"
+      content="Este sitio web fue creado con el propósito de aprender
+            a manejar servidores web creados con C, utilizando sockets"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Reserva de Asientos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../css/booking_style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <section class="movie-info">
+        
+      </section>
+      <section class="showtime-info">
+        <h3>Selecciona un horario</h3>
+        <label for="showtime-select">Selecciona un horario:</label>
+        <select id="showtime-select" name="showtime-select">
+        </select>
+      </section>
+
+      <h3>Selecciona tus asientos:</h3>
+      <p class="screen">Pantalla</p>
+      <div class="seat-map">
+
+      </div>
+      <div class="example-info">
+        <div class="example selected"></div>
+        <span>Seleccionado</span>
+        <div class="example"></div>
+        <span>Disponible</span>
+        <div class="example occupied"></div>
+        <span>Ocupado</span>
+      </div>
+      <div class="seat-details">
+        <p>Número de asientos seleccionados: <span class="selected-seats-count">0</span></p>
+        <p>Asiento seleccionados: <span class="selected-seats"></span></p>
+        <button id="checkout-btn">Pagar</button>
+        <button onclick="window.location.href = '/'">Atrás</button>
+      </div>
+    </div>
+    <script src="../js/booking_script.js"></script>
+  </body>
+</html>

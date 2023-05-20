@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "socketutil.h": "c",
+        "signal.h": "c",
+        "unistd.h": "c"
+    }
+}
