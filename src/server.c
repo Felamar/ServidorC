@@ -70,7 +70,7 @@ void handleRequest(int client_fd, char *request, movie movies[]){
     /* Verifica que tipo de petición se recibió y responde adecuadamente */
 
     if (strcmp(path, "/") == 0){                          /* Indice o página principal */
-        serveFile(client_fd, "../html/index.html");
+        serveFile(client_fd, "/html/index.html");
         imprimir("Enviando: index.html");
         refresh();
     }
